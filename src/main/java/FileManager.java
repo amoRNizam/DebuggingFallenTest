@@ -339,6 +339,7 @@ public class FileManager {
                     if (result == JFileChooser.APPROVE_OPTION) {
                         System.out.println(chooser.getSelectedFile());
                         pathResult.setText(chooser.getSelectedFile().getAbsolutePath());
+                        showChildrenRes(pathResult);
                     }
                 }
             });
@@ -683,6 +684,51 @@ public class FileManager {
                     node.add(new DefaultMutableTreeNode(child));
                 }
             }
+
+            @Override
+            protected void done() {
+                progressBar.setIndeterminate(false);
+                progressBar.setVisible(false);
+                tree.setEnabled(true);
+            }
+        };
+        worker.execute();
+    }
+
+    /**
+     * Add the files that are contained within the directory of this node.
+     * Thanks to Hovercraft Full Of Eels.
+     */
+    private void showChildrenRes(final JTextField pathResult) {
+        tree.setEnabled(false);
+        progressBar.setVisible(true);
+        progressBar.setIndeterminate(true);
+
+        SwingWorker<Void, File> worker = new SwingWorker<Void, File>() {
+            @Override
+            public Void doInBackground() {
+                File file = new File(pathResult.getText());
+                if (file.isDirectory()) {
+                    file = new File(pathResult.getText());
+                    File[] files = fileSystemView.getFiles(file, true); //!!
+//                    if (node.isLeaf()) {
+//                        for (File child : files) {
+//                            if (child.isDirectory()) {
+//                                publish(child);
+//                            }
+//                        }
+//                    }
+                    setTableData(files);
+                }
+                return null;
+            }
+
+//            @Override
+//            protected void process(List<File> chunks) {
+//                for (File child : chunks) {
+//                    node.add(new DefaultMutableTreeNode(child));
+//                }
+//            }
 
             @Override
             protected void done() {

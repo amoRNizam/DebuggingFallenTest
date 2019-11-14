@@ -19,6 +19,8 @@ public class FileTableModel extends AbstractTableModel {
             "E",
             "D",
             "F",
+            "Pass",
+            "Fail",
     };
 
     FileTableModel() {
@@ -52,10 +54,49 @@ public class FileTableModel extends AbstractTableModel {
                 return file.isDirectory();
             case 9:
                 return file.isFile();
+            case 10:
+                return getTestResults(file) ? "pass" : "";
+            case 11:
+                return getTestResults(file) ? "" : "fail";
             default:
                 System.err.println("Logic Error");
         }
         return "";
+    }
+
+    public boolean getTestResults(File file) {
+        if (func(file.getAbsolutePath(), "output_std.log")) {
+            return false;
+        }
+        return true;
+    }
+    static boolean flag;
+
+    static boolean func(String path, String find) {
+        try {
+            File f = new File(path);
+            String[] list = f.list();     //список файлов в текущей папке
+            for (String file : list) {      //проверка на совпадение
+                if (find.equals(file)) {
+                    flag = true;
+                    System.out.println(path + "\\" + file + " !!!!!!!!!!!!!!!!!!");  //если найден, то выход
+                    return true;
+                }
+                if (!path.endsWith("\\")) {
+                    path += "\\";
+                }
+                File tempfile = new File(path + file);
+                System.out.println(path + file);
+                if (!file.equals(".") && !file.equals("..")) {        //!!!
+                    if (tempfile.isDirectory()) {      //иначе проверяем, если это папка
+                        //path += file;
+                        func(path + file, find);               //то рекурсивный вызов этой функции
+                        if (flag) return true;
+                    }
+                }
+            }
+        }catch (NullPointerException ignored){}
+        return false;
     }
 
     public int getColumnCount() {

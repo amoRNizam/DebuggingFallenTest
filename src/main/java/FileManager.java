@@ -7,6 +7,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.filechooser.FileSystemView;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -153,7 +154,7 @@ public class FileManager {
 
             tree = new JTree(treeModel);
             tree.setRootVisible(false);
-            tree.addTreeSelectionListener(treeSelectionListener);
+//            tree.addTreeSelectionListener(treeSelectionListener);
             tree.setCellRenderer(new FileTreeCellRenderer());
             tree.expandRow(0);
             JScrollPane treeScroll = new JScrollPane(tree);
@@ -294,11 +295,8 @@ public class FileManager {
             replaceFile.setMnemonic('r');
             replaceFile.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
-                    try {
-                        replaceFile();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    //                        replaceFile();
+                    FileTableModel.getListDiffImg();
                 }
             });
             toolBar.add(replaceFile);
@@ -349,7 +347,9 @@ public class FileManager {
             deleteFile.setMnemonic('d');
             deleteFile.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
-                    deleteFile();
+//                    deleteFile();
+                    System.out.println(table.getModel().getRowCount());
+                    table.getModel().getRowCount();
                 }
             });
             toolBar.add(deleteFile);
@@ -710,7 +710,8 @@ public class FileManager {
                 File file = new File(pathResult.getText());
                 if (file.isDirectory()) {
                     file = new File(pathResult.getText());
-                    File[] files = fileSystemView.getFiles(file, true); //!!
+                    File[] files = fileSystemView.getFiles(file, true);
+                    //!!
 //                    if (node.isLeaf()) {
 //                        for (File child : files) {
 //                            if (child.isDirectory()) {
@@ -718,6 +719,7 @@ public class FileManager {
 //                            }
 //                        }
 //                    }
+
                     setTableData(files);
                 }
                 return null;

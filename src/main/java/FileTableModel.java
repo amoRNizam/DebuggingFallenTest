@@ -1,10 +1,15 @@
+import org.apache.commons.io.FileUtils;
+
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.table.AbstractTableModel;
 import java.io.File;
-import java.util.Date;
+import java.io.FilenameFilter;
+import java.util.*;
 
 public class FileTableModel extends AbstractTableModel {
+    public static Map<String, String> difImg = new HashMap<>();
+    public static String fileName = "difference_scr";
 
     private File[] files;
     private FileSystemView fileSystemView = FileSystemView.getFileSystemView();
@@ -19,8 +24,7 @@ public class FileTableModel extends AbstractTableModel {
             "E",
             "D",
             "F",
-            "Pass",
-            "Fail",
+            "Pass/Fail",
     };
 
     FileTableModel() {
@@ -30,9 +34,9 @@ public class FileTableModel extends AbstractTableModel {
     FileTableModel(File[] files) {
         this.files = files;
     }
-
     public Object getValueAt(int row, int column) {
         File file = files[row];
+        getFailDiffImg(file);
         switch (column) {
             case 0:
                 return fileSystemView.getSystemIcon(file);
@@ -55,21 +59,53 @@ public class FileTableModel extends AbstractTableModel {
             case 9:
                 return file.isFile();
             case 10:
-                return getTestResults(file) ? "pass" : "";
-            case 11:
-                return getTestResults(file) ? "" : "fail";
-            default:
-                System.err.println("Logic Error");
+                return getTestResults(file) ? "fail" : "pass";
+//            default:
+//                System.err.println("Logic Error");
         }
         return "";
     }
 
-    public boolean getTestResults(File file) {
-        if (func(file.getAbsolutePath(), "output_std.log")) {
-            return false;
+    public void getFailDiffImg(File file) {
+
+        File root = file;
+        try {
+            boolean recursive = true;
+
+            if (file.isDirectory()) {
+                Collection files = FileUtils.listFiles(root, null, recursive);
+                for (Iterator iterator = files.iterator(); iterator.hasNext(); ) {
+                    File file1 = (File) iterator.next();
+//                    System.out.println(file1.getAbsolutePath());
+                    if (file1.getName().contains(fileName)) {
+                        difImg.put(file.getName(), file1.getAbsolutePath().trim());
+                    }
+
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return true;
+//        for (String img :
+//                difImg) {
+//            System.out.println(img);
+//        }
+//        for (Map.Entry<String, String> img : difImg.entrySet()) {
+//            System.out.println(img.getKey() + " - " + img.getValue());
+//        }
+
     }
+
+    private boolean getTestResults(File file) {
+        return func(file.getAbsolutePath(), fileName);
+    }
+
+    public static void getListDiffImg() {
+        for (Map.Entry<String, String> img : difImg.entrySet()) {
+            System.out.println(img.getKey() + " - " + img.getValue());
+        }
+    }
+
     static boolean flag;
 
     static boolean func(String path, String find) {
@@ -77,16 +113,16 @@ public class FileTableModel extends AbstractTableModel {
             File f = new File(path);
             String[] list = f.list();     //список файлов в текущей папке
             for (String file : list) {      //проверка на совпадение
-                if (find.equals(file)) {
+                if (file.contains(find)) {
                     flag = true;
-                    System.out.println(path + "\\" + file + " !!!!!!!!!!!!!!!!!!");  //если найден, то выход
+//                    System.out.println(path + "\\" + file + " !!!!!!!!!!!!!!!!!!");  //если найден, то выход
                     return true;
                 }
                 if (!path.endsWith("\\")) {
                     path += "\\";
                 }
                 File tempfile = new File(path + file);
-                System.out.println(path + file);
+//                System.out.println(path + file);
                 if (!file.equals(".") && !file.equals("..")) {        //!!!
                     if (tempfile.isDirectory()) {      //иначе проверяем, если это папка
                         //path += file;

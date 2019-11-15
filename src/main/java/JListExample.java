@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 public class JListExample {
     JFrame frame = new JFrame("Storage");
     JList<Product> list = new JList<>();
-    DefaultListModel<Product> model = new DefaultListModel<>();
+    public static DefaultListModel<Product> model = new DefaultListModel<>();
     JLabel label = new JLabel();
     JPanel panel = new JPanel();
     JSplitPane splitPane = new JSplitPane();
@@ -18,6 +18,7 @@ public class JListExample {
             Product p = list.getSelectedValue();
             label.setText(p.getName() + " price is = " + p.getPrice().toPlainString());
         });
+
         splitPane.setLeftComponent(new JScrollPane(list));
         panel.add(label);
         splitPane.setRightComponent(panel);
@@ -32,7 +33,7 @@ public class JListExample {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(JListExample::new);
     }
-    private class Product {
+    protected static class Product {
         String name;
         BigDecimal price;
         public Product(String name, BigDecimal price) {

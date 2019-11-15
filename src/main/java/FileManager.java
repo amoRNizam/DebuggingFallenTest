@@ -1,3 +1,5 @@
+import com.sun.deploy.panel.JreTableModel;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -9,6 +11,7 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
@@ -19,6 +22,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
@@ -98,6 +102,29 @@ public class FileManager {
         if (gui == null) {
             gui = new JPanel(new BorderLayout(3, 3));
             gui.setBorder(new EmptyBorder(5, 5, 5, 5));
+            //-------------------------------------
+//            JList<JListExample.Product> list = new JList<>();
+//            DefaultListModel<JListExample.Product> model = new DefaultListModel<>();
+//            JSplitPane splitPane2 = new JSplitPane();
+//            JFrame frame = new JFrame("Storage");
+//            JPanel panel = new JPanel();
+//            list.setModel(model);
+//            model.addElement(new JListExample.Product("Item1", new BigDecimal("49.00")));
+//            model.addElement(new JListExample.Product("Item2", new BigDecimal("150")));
+//            model.addElement(new JListExample.Product("Item3", new BigDecimal("54.5")));
+//            model.addElement(new JListExample.Product("Item4", new BigDecimal("120.00")));
+//            splitPane2.setLeftComponent(new JScrollPane(list));
+////            panel.add(label);
+//            splitPane2.setRightComponent(panel);
+//            splitPane2.setResizeWeight(0.5); //used to set the way it splits the left and right component
+//            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+//            frame.add(splitPane2);
+//            frame.pack();
+//            frame.setLocationRelativeTo(null);
+//            frame.setVisible(true);
+//            frame.setSize(500, 300);
+//            gui.add(list);
+            //-------------------------------
 
             fileSystemView = FileSystemView.getFileSystemView();
             desktop = Desktop.getDesktop();
@@ -157,7 +184,16 @@ public class FileManager {
 //            tree.addTreeSelectionListener(treeSelectionListener);
             tree.setCellRenderer(new FileTreeCellRenderer());
             tree.expandRow(0);
-            JScrollPane treeScroll = new JScrollPane(tree);
+            JPanel fileMainDetails2 = new JPanel(new BorderLayout(4, 2));
+            JList<JListExample.Product> list = new JList<>();
+            DefaultListModel<JListExample.Product> model = new DefaultListModel<>();
+            list.setModel(model);
+            model.addElement(new JListExample.Product("Item1", new BigDecimal("49.00")));
+            model.addElement(new JListExample.Product("Item2", new BigDecimal("150")));
+            model.addElement(new JListExample.Product("Item3", new BigDecimal("54.5")));
+            model.addElement(new JListExample.Product("Item4", new BigDecimal("120.00")));
+
+            JScrollPane treeScroll = new JScrollPane(list);
 
             // as per trashgod tip
             tree.setVisibleRowCount(15);
@@ -375,11 +411,12 @@ public class FileManager {
 
             fileView.add(toolBar, BorderLayout.NORTH);
             fileView.add(fileMainDetails, BorderLayout.CENTER);
+            fileView.add(fileMainDetails, BorderLayout.CENTER);
 
             detailView.add(fileView, BorderLayout.SOUTH);
 
             JSplitPane splitPane = new JSplitPane(
-                    JSplitPane.HORIZONTAL_SPLIT,
+                    JSplitPane.VERTICAL_SPLIT,
                     treeScroll,
                     detailView);
             gui.add(splitPane, BorderLayout.CENTER);

@@ -45,7 +45,7 @@ public class FileTableModel extends AbstractTableModel {
                 return fileSystemView.getSystemDisplayName(file);
             case 2:
 //                return file.getPath();
-                return "123-" + listFile.get(row);
+                return listFile.get(row);
             case 3:
                 return file.length();
             case 4:

@@ -49,6 +49,7 @@ public class FileManager {
      * currently selected File.
      */
     private static File currentFile;
+    private static String currentFileDiff;
 
     /**
      * Main GUI container
@@ -195,15 +196,29 @@ public class FileManager {
             JSplitPane splitPane2 = new JSplitPane();
 
             list.setModel(model);
-            model.addElement(new JListExample.Product("Item1", "49.00"));
-            model.addElement(new JListExample.Product("Item2", "150"));
-            model.addElement(new JListExample.Product("Item3", "54.5"));
-            model.addElement(new JListExample.Product("Item4", "120.00"));
+            // здесь заполняется текст для отображения в правой части панели
             list.getSelectionModel().addListSelectionListener(e -> {
                 JListExample.Product p = list.getSelectedValue();
-//                label.setText(p.getName() + " price is = " + p.getPrice());
-                textPane.setText(p.getName() + " price is = " + p.getPrice() + " " + FileTableModel.difImg.get("50803"));
+////                    textPane.setText(currentFile.getAbsolutePath());
+//                label.setText(p.getName() + " price is = " + p.getPath());
+                File file = new File(FileTableModel.difImg.get("" + p.getName().trim()));
+                try {
+                    desktop.open(file);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+                int row = list.getSelectionModel().getLeadSelectionIndex();
+                System.out.println("VALUE - " + list.getSelectedValue().getPath());
+//                setSelectFile(((FileTableModel) list.getModel()).getFile(row));
+
+                textPane.setText(FileTableModel.difImg.get("" + p.getName().trim()));
+
             });
+//            list.getSelectionModel().addListSelectionListener(e -> {
+//                    int row = list.getSelectionModel().getLeadSelectionIndex();
+//                    setSelectFile(((FileTableModel) list.getModel()).getFile(row));
+//
+//            });
 
             splitPane2.setLeftComponent(new JScrollPane(list));
             panel.add(textPane);
@@ -401,8 +416,14 @@ public class FileManager {
             deleteFile.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
 //                    deleteFile();
-                    System.out.println(table.getModel().getRowCount());
-                    table.getModel().getRowCount();
+//                    System.out.println("Absolute path = " + currentFile.getAbsolutePath());
+//                    System.out.println("Name = " + currentFile.getName());
+//                    System.out.println("Parent = " + currentFile.getParent());
+//                    System.out.println("Parent File = " + currentFile.getParentFile());
+                    model.addElement(new JListExample.Product(currentFile.getName(), currentFile.getAbsolutePath()));
+//                    System.out.println(table.getModel().getRowCount());
+//                    table.getModel().getRowCount();
+//                    System.out.println(currentFileDiff);
                 }
             });
             toolBar.add(deleteFile);
@@ -775,7 +796,7 @@ public class FileManager {
 //                    }
 
                     FileTableModel.listFile = new ArrayList<>(Arrays.asList(files));
-                    FileTableModel.listFile.forEach(x -> System.out.println("FILE = " + x));
+//                    FileTableModel.listFile.forEach(x -> System.out.println("FILE = " + x));
 
                     setTableData(files);
                 }
@@ -825,6 +846,11 @@ public class FileManager {
                             fileSystemView.getSystemDisplayName(file));
         }
 
+        gui.repaint();
+    }
+
+    private void setSelectFile(String file) {
+        currentFileDiff = file;
         gui.repaint();
     }
 

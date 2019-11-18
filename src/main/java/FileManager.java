@@ -26,6 +26,7 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -184,16 +185,32 @@ public class FileManager {
 //            tree.addTreeSelectionListener(treeSelectionListener);
             tree.setCellRenderer(new FileTreeCellRenderer());
             tree.expandRow(0);
+            //**************************************
             JPanel fileMainDetails2 = new JPanel(new BorderLayout(4, 2));
             JList<JListExample.Product> list = new JList<>();
             DefaultListModel<JListExample.Product> model = new DefaultListModel<>();
-            list.setModel(model);
-            model.addElement(new JListExample.Product("Item1", new BigDecimal("49.00")));
-            model.addElement(new JListExample.Product("Item2", new BigDecimal("150")));
-            model.addElement(new JListExample.Product("Item3", new BigDecimal("54.5")));
-            model.addElement(new JListExample.Product("Item4", new BigDecimal("120.00")));
+            JLabel label = new JLabel();
+            JPanel panel = new JPanel();
+            JTextPane textPane = new JTextPane();
+            JSplitPane splitPane2 = new JSplitPane();
 
-            JScrollPane treeScroll = new JScrollPane(list);
+            list.setModel(model);
+            model.addElement(new JListExample.Product("Item1", "49.00"));
+            model.addElement(new JListExample.Product("Item2", "150"));
+            model.addElement(new JListExample.Product("Item3", "54.5"));
+            model.addElement(new JListExample.Product("Item4", "120.00"));
+            list.getSelectionModel().addListSelectionListener(e -> {
+                JListExample.Product p = list.getSelectedValue();
+//                label.setText(p.getName() + " price is = " + p.getPrice());
+                textPane.setText(p.getName() + " price is = " + p.getPrice() + " " + FileTableModel.difImg.get("50803"));
+            });
+
+            splitPane2.setLeftComponent(new JScrollPane(list));
+            panel.add(textPane);
+            splitPane2.setRightComponent(panel);
+            splitPane2.setResizeWeight(0.5); //used to set the way it splits the left and right component
+            //*****************************************
+            JScrollPane treeScroll = new JScrollPane(splitPane2);
 
             // as per trashgod tip
             tree.setVisibleRowCount(15);
@@ -756,6 +773,9 @@ public class FileManager {
 //                            }
 //                        }
 //                    }
+
+                    FileTableModel.listFile = new ArrayList<>(Arrays.asList(files));
+                    FileTableModel.listFile.forEach(x -> System.out.println("FILE = " + x));
 
                     setTableData(files);
                 }

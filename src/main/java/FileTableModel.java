@@ -12,6 +12,7 @@ public class FileTableModel extends AbstractTableModel {
     public static String fileName = "difference_scr";
 
     private File[] files;
+    public static List listFile;
     private FileSystemView fileSystemView = FileSystemView.getFileSystemView();
     private String[] columns = {
             "Icon",
@@ -43,7 +44,8 @@ public class FileTableModel extends AbstractTableModel {
             case 1:
                 return fileSystemView.getSystemDisplayName(file);
             case 2:
-                return file.getPath();
+//                return file.getPath();
+                return "123-" + listFile.get(row);
             case 3:
                 return file.length();
             case 4:

@@ -25,9 +25,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.nio.channels.FileChannel;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
+import java.util.*;
 import java.util.List;
 
 public class FileManager {
@@ -85,7 +83,7 @@ public class FileManager {
     /* File details. */
     private JLabel fileName;
     private JTextField path;
-    private JTextField pathProject;
+    public static JTextField pathProject;
     private JTextField pathResult;
     private JLabel date;
     private JLabel size;
@@ -217,7 +215,7 @@ public class FileManager {
 //                    ex.printStackTrace();
 //                }
 //                int row = list.getSelectionModel().getLeadSelectionIndex();
-                System.out.println("VALUE - " + list.getSelectedValue().getPath());
+//                System.out.println("VALUE - " + list.getSelectedValue().getPath());
 //                setSelectFile(((FileTableModel) list.getModel()).getFile(row));
 
 
@@ -257,8 +255,8 @@ public class FileManager {
             fileDetailsLabels.add(new JLabel("File", JLabel.TRAILING));
             fileName = new JLabel();
             fileDetailsValues.add(fileName);
-            fileDetailsLabels.add(new JLabel("Path project dir", JLabel.TRAILING));
-            fileDetailsLabels.add(new JLabel("Path result dir", JLabel.TRAILING));
+            fileDetailsLabels.add(new JLabel("'Input' in project", JLabel.TRAILING));
+            fileDetailsLabels.add(new JLabel("Result dir", JLabel.TRAILING));
             path = new JTextField(5);
             pathProject = new JTextField(5);
             pathResult = new JTextField(5);
@@ -292,9 +290,101 @@ public class FileManager {
             // mnemonics stop working in a floated toolbar
             toolBar.setFloatable(false);
 
+//            openFile = new JButton("Open");
+//            openFile.setMnemonic('o');
+//            openFile.addActionListener(new ActionListener() {
+//                public void actionPerformed(ActionEvent ae) {
+//                    try {
+//                        desktop.open(currentFile);
+//                    } catch (Throwable t) {
+//                        showThrowable(t);
+//                    }
+//                    gui.repaint();
+//                }
+//            });
+//            toolBar.add(openFile);
+
+            editFile = new JButton("Edit");
+            editFile.setMnemonic('e');
+            editFile.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+//                    try {
+//                        desktop.edit(currentFile);
+//                    } catch (Throwable t) {
+//                        showThrowable(t);
+//                    }
+//                    for (Map.Entry<String, String> img : FileTableModel.ERROR_DIFF_IMG.entrySet()) {
+//                        System.out.println(img.getKey() + " * " + img.getValue());
+//                    }
+                    try {
+                        Utils.reReference();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            toolBar.add(editFile);
+
+//            printFile = new JButton("Print");
+//            printFile.setMnemonic('p');
+//            printFile.addActionListener(new ActionListener() {
+//                public void actionPerformed(ActionEvent ae) {
+//                    try {
+//                        desktop.print(currentFile);
+//                    } catch (Throwable t) {
+//                        showThrowable(t);
+//                    }
+//                }
+//            });
+//            toolBar.add(printFile);
+            JButton openErrorImg = new JButton("Open Error");
+            openErrorImg.setMnemonic('r');
+            openErrorImg.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    //                        replaceFile();
+//                    FileTableModel.getListDiffImg();
+                    File file = new File(FileTableModel.difImg.get(list.getSelectedValue().getName()));
+                    System.out.println(file.getAbsolutePath());
+                    try {
+                        desktop.open(file);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            toolBar.add(openErrorImg);
+
+            toolBar.addSeparator();
+
+//            newFile = new JButton("New");
+//            newFile.setMnemonic('n');
+//            newFile.addActionListener(new ActionListener() {
+//                public void actionPerformed(ActionEvent ae) {
+//                    newFile();
+//                }
+//            });
+//            toolBar.add(newFile);
+
+//            copyFile = new JButton("Copy");
+//            copyFile.setMnemonic('c');
+//            copyFile.addActionListener(new ActionListener() {
+//                public void actionPerformed(ActionEvent ae) {
+//                    showErrorMessage("'Copy' not implemented.", "Not implemented.");
+//                }
+//            });
+//            toolBar.add(copyFile);
+
+//            JButton renameFile = new JButton("Rename");
+//            renameFile.setMnemonic('r');
+//            renameFile.addActionListener(new ActionListener() {
+//                public void actionPerformed(ActionEvent ae) {
+//                    renameFile();
+//                }
+//            });
+//            toolBar.add(renameFile);
+
             openFile = new JButton("Open");
             openFile.setMnemonic('o');
-
             openFile.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
                     try {
@@ -306,66 +396,6 @@ public class FileManager {
                 }
             });
             toolBar.add(openFile);
-
-            editFile = new JButton("Edit");
-            editFile.setMnemonic('e');
-            editFile.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent ae) {
-                    try {
-                        desktop.edit(currentFile);
-                    } catch (Throwable t) {
-                        showThrowable(t);
-                    }
-                }
-            });
-            toolBar.add(editFile);
-
-            printFile = new JButton("Print");
-            printFile.setMnemonic('p');
-            printFile.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent ae) {
-                    try {
-                        desktop.print(currentFile);
-                    } catch (Throwable t) {
-                        showThrowable(t);
-                    }
-                }
-            });
-            toolBar.add(printFile);
-
-            // Check the actions are supported on this platform!
-            openFile.setEnabled(desktop.isSupported(Desktop.Action.OPEN));
-            editFile.setEnabled(desktop.isSupported(Desktop.Action.EDIT));
-            printFile.setEnabled(desktop.isSupported(Desktop.Action.PRINT));
-
-            toolBar.addSeparator();
-
-            newFile = new JButton("New");
-            newFile.setMnemonic('n');
-            newFile.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent ae) {
-                    newFile();
-                }
-            });
-            toolBar.add(newFile);
-
-            copyFile = new JButton("Copy");
-            copyFile.setMnemonic('c');
-            copyFile.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent ae) {
-                    showErrorMessage("'Copy' not implemented.", "Not implemented.");
-                }
-            });
-            toolBar.add(copyFile);
-
-            JButton renameFile = new JButton("Rename");
-            renameFile.setMnemonic('r');
-            renameFile.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent ae) {
-                    renameFile();
-                }
-            });
-            toolBar.add(renameFile);
 
             JButton replaceFile = new JButton("Replace");
             replaceFile.setMnemonic('r');
@@ -420,25 +450,31 @@ public class FileManager {
             });
             toolBar.add(selectDirResultTest);
 
-            deleteFile = new JButton("Delete");
+            deleteFile = new JButton(" ADD ");
             deleteFile.setMnemonic('d');
             deleteFile.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
-//                    deleteFile();
-//                    System.out.println("Absolute path = " + currentFile.getAbsolutePath());
-//                    System.out.println("Name = " + currentFile.getName());
-//                    System.out.println("Parent = " + currentFile.getParent());
-//                    System.out.println("Parent File = " + currentFile.getParentFile());
-                    model.addElement(new JListExample.Product(currentFile.getName(), currentFile.getAbsolutePath()));
+
+                    if (FileTableModel.difImg.containsKey(currentFile.getName())) {
+                        model.addElement(new JListExample.Product(currentFile.getName(), currentFile.getAbsolutePath()));
+                        FileTableModel.ERROR_DIFF_IMG.put(currentFile.getName(), FileTableModel.difImg.get(currentFile.getName()));
+                    } else {
+                        System.out.println("В тесте нет ошибок!");
+                    }
 //                    System.out.println(table.getModel().getRowCount());
 //                    table.getModel().getRowCount();
 //                    System.out.println(currentFileDiff);
-                    System.out.println(Utils.getProperty().get("key"));
-                    System.out.println("Working Directory = " +
-                            System.getProperty("user.dir"));
+//                    System.out.println(Utils.getProperty().get("key"));
+//                    System.out.println("Working Directory = " +
+//                            System.getProperty("user.dir"));
                 }
             });
             toolBar.add(deleteFile);
+
+            // Check the actions are supported on this platform!
+            openFile.setEnabled(desktop.isSupported(Desktop.Action.OPEN));
+            editFile.setEnabled(desktop.isSupported(Desktop.Action.EDIT));
+//            printFile.setEnabled(desktop.isSupported(Desktop.Action.PRINT));
 
             toolBar.addSeparator();
 
@@ -920,6 +956,8 @@ public class FileManager {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
+                // Инициализируем конфиги
+                new Config();
                 try {
                     // Significantly improves the look of the output in
                     // terms of the file names returned by FileSystemView!

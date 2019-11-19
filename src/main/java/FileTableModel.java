@@ -9,6 +9,8 @@ import java.util.*;
 
 public class FileTableModel extends AbstractTableModel {
     public static Map<String, String> difImg = new HashMap<>();
+    public static Map<String, String> ERROR_DIFF_IMG = new HashMap<>();
+    public static Map<String, String> listSelectedErDifImg = new HashMap<>();
     public static String fileName = "difference_scr";
 
     private File[] files;
@@ -79,7 +81,7 @@ public class FileTableModel extends AbstractTableModel {
                 for (Iterator iterator = files.iterator(); iterator.hasNext(); ) {
                     File file1 = (File) iterator.next();
 //                    System.out.println(file1.getAbsolutePath());
-                    if (file1.getName().contains(fileName)) {
+                    if (file1.getName().contains(Config.PREFIX_ERROR_IMG)) {
                         difImg.put(file.getName(), file1.getAbsolutePath().trim());
                     }
 

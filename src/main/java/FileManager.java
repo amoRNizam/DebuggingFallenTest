@@ -35,7 +35,7 @@ public class FileManager {
     /**
      * Title of the application
      */
-    public static final String APP_TITLE = "FileMan";
+    public static final String APP_TITLE = "Debug tests";
     /**
      * Used to open/edit/print files.
      */
@@ -194,6 +194,8 @@ public class FileManager {
             JPanel panel = new JPanel();
             JTextPane textPane = new JTextPane();
             JSplitPane splitPane2 = new JSplitPane();
+            JToolBar toolBar2 = new JToolBar();
+
 
             list.setModel(model);
             // здесь заполняется текст для отображения в правой части панели
@@ -201,17 +203,23 @@ public class FileManager {
                 JListExample.Product p = list.getSelectedValue();
 ////                    textPane.setText(currentFile.getAbsolutePath());
 //                label.setText(p.getName() + " price is = " + p.getPath());
-                File file = new File(FileTableModel.difImg.get("" + p.getName().trim()));
+                File file;
                 try {
-                    desktop.open(file);
-                } catch (IOException ex) {
-                    ex.printStackTrace();
+
+                    file = new File(FileTableModel.difImg.get("" + p.getName().trim()));
+                    textPane.setText(file.getAbsolutePath());
+                } catch (NullPointerException em) {
+                    textPane.setText("Не найдено изображение расхождения сравниваемых изображений.");
                 }
-                int row = list.getSelectionModel().getLeadSelectionIndex();
+//                try {
+//                    desktop.open(file);
+//                } catch (IOException | NullPointerException ex) {
+//                    ex.printStackTrace();
+//                }
+//                int row = list.getSelectionModel().getLeadSelectionIndex();
                 System.out.println("VALUE - " + list.getSelectedValue().getPath());
 //                setSelectFile(((FileTableModel) list.getModel()).getFile(row));
 
-                textPane.setText(FileTableModel.difImg.get("" + p.getName().trim()));
 
             });
 //            list.getSelectionModel().addListSelectionListener(e -> {
@@ -223,11 +231,11 @@ public class FileManager {
             splitPane2.setLeftComponent(new JScrollPane(list));
             panel.add(textPane);
             splitPane2.setRightComponent(panel);
-            splitPane2.setResizeWeight(0.5); //used to set the way it splits the left and right component
+            splitPane2.setResizeWeight(0.5); // способ разделеня левого и правого компонента
+            splitPane2.getLeftComponent().setPreferredSize(new Dimension(2, 180));
+            splitPane2.getRightComponent().setPreferredSize(new Dimension(350, 180));
             //*****************************************
             JScrollPane treeScroll = new JScrollPane(splitPane2);
-
-            // as per trashgod tip
             tree.setVisibleRowCount(15);
 
             Dimension preferredSize = treeScroll.getPreferredSize();
@@ -406,6 +414,7 @@ public class FileManager {
                         System.out.println(chooser.getSelectedFile());
                         pathResult.setText(chooser.getSelectedFile().getAbsolutePath());
                         showChildrenRes(pathResult);
+                        model.clear(); // при выборе папки с результатами очищаем таблицу выбранных тестов
                     }
                 }
             });
@@ -424,6 +433,9 @@ public class FileManager {
 //                    System.out.println(table.getModel().getRowCount());
 //                    table.getModel().getRowCount();
 //                    System.out.println(currentFileDiff);
+                    System.out.println(Utils.getProperty().get("key"));
+                    System.out.println("Working Directory = " +
+                            System.getProperty("user.dir"));
                 }
             });
             toolBar.add(deleteFile);
